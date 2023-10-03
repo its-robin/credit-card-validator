@@ -20,33 +20,92 @@ const mystery4 = [4, 9, 2, 9, 8, 7, 7, 1, 6, 9, 2, 1, 7, 0, 9, 3];
 const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3];
 
 // An array of all the arrays above
-const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5];
-
+const batch = [
+  valid1,
+  valid2,
+  valid3,
+  valid4,
+  valid5,
+  invalid1,
+  invalid2,
+  invalid3,
+  invalid4,
+  invalid5,
+  mystery1,
+  mystery2,
+  mystery3,
+  mystery4,
+  mystery5,
+];
 
 // Add your functions below:
 //Implemenation of Luhn's Algorithm or Mod10 Algorithm
-const validateCred =  cardArray => {
-   // Reverse the card array
-    let reversedArray = cardArray.reverse();
-    //return reversedArray;
+const validateCred = (cardArray) => {
+  // Reverse the card array
+  // Convert the string to an array of numbers
+  //const numbersArray = cardArray.split('').map(Number);
 
-    for (let i =1 ; i<reversedArray.length ; i+=2 )
-    {
-      reversedArray[i] *=2;
-      if( reversedArray[i] > 9){
-        reversedArray[i]-=9;
-      }
+  // Create a copy of the array and then reverse it
+  const reversedArray = cardArray.slice().reverse();
+  //return reversedArray;
+
+  for (let i = 1; i < reversedArray.length; i += 2) {
+    reversedArray[i] *= 2;
+    if (reversedArray[i] > 9) {
+      reversedArray[i] -= 9;
     }
+  }
 
-    const sum = reversedArray.reduce(((accumulator,currentVal) => accumulator + currentVal),0);
-    return sum % 10 === 0;
-}
+  const sum = reversedArray.reduce(
+    (accumulator, currentVal) => accumulator + currentVal,
+    0
+  );
+  return sum % 10 === 0;
+};
 
-console.log(validateCred(valid1));
-console.log(validateCred(mystery4));
+const findInvalidCards = (batcharray) => {
+  const invalidCardsArr = [];
+  // Iterate through the outer array
+  for (const cardArray of batcharray) {
+    // Iterate through the inner array (which represents a card)
+    if (!validateCred(cardArray)) {
+      // console.log('in');
+      invalidCardsArr.push(cardArray);
+    }
+  }
+  return invalidCardsArr;
+};
 
+const invalidCardsArray = findInvalidCards(batch);
+//console.log(invalidCards);
 
+const idInvalidCardCompanies = (invalidCardCompany) => {
+  const invalidCompaniesList = [];
+  for (const cardArray of invalidCardCompany) {
+    const firstDigit = cardArray[0];
+    if (!invalidCompaniesList.includes(firstDigit)) {
+      invalidCompaniesList.push(firstDigit);
+    }
+  }
 
+  const companyNames = invalidCompaniesList.map(allCompanies);
+  return companyNames.length > 0
+    ? companyNames
+    : "No companies found with invalid cards.";
+};
 
+const allCompanies = (digit) => {
+  if (digit === 3) {
+    return "Amex (American Express)";
+  } else if (digit === 4) {
+    return "VISA";
+  } else if (digit === 5) {
+    return "Master Card";
+  } else if (digit === 6) {
+    return "Discover";
+  } else {
+    return "Company Not Found";
+  }
+};
 
-
+//console.log(idInvalidCardCompanies(batch));
